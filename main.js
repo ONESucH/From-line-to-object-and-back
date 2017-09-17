@@ -7,17 +7,27 @@ var str = '{2} - {3} :: {12}';
 a(str);
 
 function a(string) {
+    var html = '';
+
     reversObj.column = string.match(/\d+/g);
     reversObj.maskSymbol = string.match(/[^a-zA-Z а-яА-Я0-9{}]/g);
+
+    reversObj.maskSymbol.forEach(function (item) {
+        if (item === ':') {
+            html += item;
+        }
+    });
+
+    reversObj.maskSymbol = string.match(/[^a-zA-Z а-яА-Я0-9{}:]/g);
+
+    reversObj.maskSymbol.push(html);
 
     console.log('Полученный результат первой функции -', reversObj);
     b(reversObj);
 }
 
 function b(obj) {
-    var html = '',
-        clearSymbol = '',
-        result = '';
+    var clearSymbol = '';
 
     for(var a = 0; a < str.length; a++) {
        if (typeof(obj.column[a]) !== 'undefined') {
@@ -26,6 +36,7 @@ function b(obj) {
        } else {
            return '';
        }
-        console.log('Полученный результат второй функции -', clearSymbol);
+        var length = clearSymbol.slice(0, -9);
+        console.log('Полученный результат второй функции - ', length);
     }
 }
