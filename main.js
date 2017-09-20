@@ -1,42 +1,43 @@
 'use strict';
 // "{2} - {3} :: {12}" => {columns: [2,3,12], maskSymbols: [' - ',' :: ']}
 
-var reversObj = {};
-var str = '{2} - {3} :: {12}';
+var reverseObj = {};
+var str = '@234dsfs {223121} - {4}{5}++++ {9}';
 
 a(str);
 
 function a(string) {
-    var html = '';
+    var html = [];
 
-    reversObj.column = string.match(/\d+/g);
-    reversObj.maskSymbol = string.match(/[^a-zA-Z а-яА-Я0-9{}]/g);
+    var regIx = string.match(/\{.+?}/g);
 
-    reversObj.maskSymbol.forEach(function (item) {
-        if (item === ':') {
-            html += item;
-        }
-    });
+    for(var key in regIx) {
+        var rightSymb = regIx[key].slice(0, regIx[key].length-1);
+        var leftSymb = rightSymb.slice(1);
 
-    reversObj.maskSymbol = string.match(/[^a-zA-Z а-яА-Я0-9{}:]/g);
+        html.push(leftSymb);
+    }
 
-    reversObj.maskSymbol.push(html);
+    reverseObj.column = html;
+    reverseObj.maskSymbol = string.match(/[^a-zA-Z а-яА-Я0-9{}:]/g);
 
-    console.log('Полученный результат первой функции -', reversObj);
-    b(reversObj);
+    console.log('Полученный результат первой функции -', reverseObj);
+    b(reverseObj);
 }
+
 
 function b(obj) {
     var clearSymbol = '';
 
     for(var a = 0; a < str.length; a++) {
-       if (typeof(obj.column[a]) !== 'undefined') {
-           clearSymbol += '{' + obj.column[a] + '}';
-           clearSymbol += obj.maskSymbol[a];
-       } else {
-           return '';
-       }
-        var length = clearSymbol.slice(0, -9);
-        console.log('Полученный результат второй функции - ', length);
+        if(typeof(obj.column[a] && obj.maskSymbol[a]) === 'undefined') {
+            delete obj.column[a];
+            delete obj.maskSymbol[a];
+        } else {
+            clearSymbol += '{' + obj.column[a] + '}';
+            clearSymbol += obj.maskSymbol[a];
+        }
     }
+
+    console.log('Полученный результат второй функции - ', clearSymbol);
 }
