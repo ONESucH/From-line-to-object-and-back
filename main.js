@@ -1,59 +1,65 @@
 'use strict';
-// "{2} - {3} :: {12}" => {columns: [2,3,12], maskSymbols: [' - ',' :: ']}
+var string = '@234dsfs{100}-{200}{300}++++{9}';
 
-var reverseObj = {};
-var str = '@234dsfs{100}-{200}{300}++++{9}';
-
-console.log('str ', str);
-
-a(str);
-
-function a(string) {
-    var logic = false,
+// Рендерим строку в объект
+renderObject(string);
+function renderObject(str) {
+    var reverseObj = {},
+        suitableCharacter = false,
         columns = [],
         maskSymbols = [],
-        html = '',
-        html_2 = '';
+        stringOutside = '',
+        stringWhithin = '',
+        remainder = '';
 
-    for(var a = 0; a < string.length; a++) {
-        if (!logic) {
-            html_2 = '';
-            html += string[a];
+    for (var letter = 0; letter < str.length; letter++) {
+
+        // перебираем символы в строке
+        if (!suitableCharacter) {
+            stringWhithin = '';
+            stringOutside += str[letter];
         } else {
-            html = '';
-            html_2 += string[a];
+            stringOutside = '';
+            stringWhithin += str[letter];
         }
 
-        if(string[a] === '{') {
-            var clear = html.slice(0, -1);
-            columns.push(clear);
+        // добавляем в нужные свойства
+        if (str[letter] === '{' && str[letter]) {
+            var clear = stringOutside.slice(0, -1); // очищаем ненужные символы
+            columns.push(clear); // Добавляем в массив выбранные символы
             reverseObj.columns = columns;
-            logic = true;
+            suitableCharacter = true;
+        } else if (typeof(undefined)) {
+            remainder = stringOutside;
         }
-        if(string[a] === '}') {
-            var clear_2 = html_2.slice(0, -1);
-            maskSymbols.push(clear_2);
-            delete maskSymbols[maskSymbols.indexOf('}')];
+        if (str[letter] === '}') {
+            var clear_2 = stringWhithin.slice(0, -1); // очищаем ненужные символы
+            maskSymbols.push(clear_2); // Добавляем в массив выбранные символы
             reverseObj.maskSymbols = maskSymbols;
-            logic = false;
+            suitableCharacter = false;
         }
 
     }
 
-    console.log('Полученный результат первой функции -  ', reverseObj);
-   b(reverseObj);
+    // добавляем остаток
+    columns.push(remainder);
+
+    console.log('Полученный объект -  ', reverseObj);
+    // передаём полученный результат в другую функцию
+    renderString(reverseObj);
 }
 
-function b(obj) {
+// Рендерим объект в строку
+function renderString(obj) {
     var clearSymbol = '';
 
-    for (var a = 0; a < str.length; a++) {
-        if (obj.columns[a] !== undefined) {
-            clearSymbol += obj.columns[a];
-            clearSymbol += '{' + obj.maskSymbols[a] + '}';
-            clearSymbol.replace(typeof(undefined), '');
+    for (var letter = 0; letter < string.length; letter++) {
+        // проверяем на наличие свойств
+        if (obj.columns[letter] !== undefined && obj.maskSymbols[letter] !== undefined) {
+            clearSymbol += obj.columns[letter];
+            clearSymbol += '{' + obj.maskSymbols[letter] + '}';
         }
     }
 
-    console.log('Полученный результат второй функции - ', clearSymbol);
+    console.log('Полученная строка - ', clearSymbol);
 }
